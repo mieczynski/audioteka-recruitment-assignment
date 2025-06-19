@@ -2,47 +2,15 @@
 
 namespace App\Repository;
 
-use App\Entity\Product;
-use App\Service\Cart\Cart;
-use App\Service\Cart\CartService;
-use Doctrine\ORM\EntityManagerInterface;
-use Ramsey\Uuid\Uuid;
+use App\Entity\Cart;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Persistence\ManagerRegistry;
 
-class CartRepository implements CartService
+class CartRepository extends ServiceEntityRepository
 {
-    public function __construct(private EntityManagerInterface $entityManager) {}
-
-    public function addProduct(string $cartId, string $productId): void
+    use CommonRepositoryMethods;
+    public function __construct(ManagerRegistry $registry)
     {
-        $cart = $this->entityManager->find(\App\Entity\Cart::class, $cartId);
-        $product = $this->entityManager->find(Product::class, $productId);
-
-        if ($cart && $product && !$cart->hasProduct($product)) {
-            $cart->addProduct($product);
-            $this->entityManager->persist($cart);
-            $this->entityManager->flush();
-        }
-    }
-
-    public function removeProduct(string $cartId, string $productId): void
-    {
-        $cart = $this->entityManager->find(\App\Entity\Cart::class, $cartId);
-        $product = $this->entityManager->find(Product::class, $productId);
-
-        if ($cart && $product && $cart->hasProduct($product)) {
-            $cart->removeProduct($product);
-            $this->entityManager->persist($cart);
-            $this->entityManager->flush();
-        }
-    }
-
-    public function create(): Cart
-    {
-        $cart = new \App\Entity\Cart(Uuid::uuid4()->toString());
-
-        $this->entityManager->persist($cart);
-        $this->entityManager->flush();
-
-        return $cart;
+        parent::__construct($registry, Cart::class);
     }
 }

@@ -4,7 +4,7 @@ namespace App\Controller\Cart;
 
 use App\Messenger\CreateCart;
 use App\Service\Cart\Cart;
-use App\Service\Cart\CartService;
+use App\Service\Cart\CartServiceInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,7 +19,7 @@ class CreateController extends AbstractController
 {
     use HandleTrait;
 
-    public function __construct(private CartService $cartService, MessageBusInterface $messageBus) {
+    public function __construct(private readonly CartServiceInterface $cartService, MessageBusInterface $messageBus) {
         $this->messageBus = $messageBus;
     }
 

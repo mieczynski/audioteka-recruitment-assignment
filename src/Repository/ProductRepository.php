@@ -2,58 +2,33 @@
 
 namespace App\Repository;
 
-use App\Service\Catalog\Product;
-use App\Service\Catalog\ProductProvider;
-use App\Service\Catalog\ProductService;
-use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\EntityRepository;
-use Ramsey\Uuid\Uuid;
+use App\Entity\Product;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Persistence\ManagerRegistry;
 
-class ProductRepository implements ProductProvider, ProductService
+class ProductRepository extends ServiceEntityRepository
 {
-    private EntityRepository $repository;
+    use CommonRepositoryMethods;
 
-    public function __construct(private EntityManagerInterface $entityManager)
+    public function __construct(ManagerRegistry $registry)
     {
-        $this->repository = $this->entityManager->getRepository(\App\Entity\Product::class);
+        parent::__construct($registry, Product::class);
     }
 
-    public function getProducts(int $page = 0, int $count = 3): iterable
+    public function findPaginated(int $page = 0, int $count = 3): array
     {
-        return $this->repository->createQueryBuilder('p')
-            ->setMaxResults($count)
+        return $this->createQueryBuilder('p')
             ->setFirstResult($page * $count)
+            ->setMaxResults($count)
             ->getQuery()
-            ->getResult()
-        ;
+            ->getResult();
     }
 
     public function getTotalCount(): int
     {
-        return $this->repository->createQueryBuilder('p')->select('count(p.id)')->getQuery()->getSingleScalarResult();
-    }
-
-    public function exists(string $productId): bool
-    {
-        return $this->repository->find($productId) !== null;
-    }
-
-    public function add(string $name, int $price): Product
-    {
-        $product = new \App\Entity\Product(Uuid::uuid4(), $name, $price);
-
-        $this->entityManager->persist($product);
-        $this->entityManager->flush();
-
-        return $product;
-    }
-
-    public function remove(string $id): void
-    {
-        $product = $this->repository->find($id);
-        if ($product !== null) {
-            $this->entityManager->remove($product);
-            $this->entityManager->flush();
-        }
+        return (int) $this->createQueryBuilder('p')
+            ->select('COUNT(p.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
     }
 }
