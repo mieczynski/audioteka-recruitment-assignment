@@ -1,0 +1,124 @@
+{
+  "info": {
+    "name": "Cart & Product API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_postman_id": "a1b2c3d4-e5f6-7890-abcd-1234567890ab"
+  },
+  "item": [
+    {
+      "name": "Add product to catalog",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/x-www-form-urlencoded"
+          }
+        ],
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [
+            { "key": "name", "value": "Example product 0" },
+            { "key": "price", "value": "1200" }
+          ]
+        },
+        "url": {
+          "raw": "https://localhost/products",
+          "protocol": "https",
+          "host": ["localhost"],
+          "path": ["products"]
+        }
+      }
+    },
+    {
+      "name": "Remove product from catalog",
+      "request": {
+        "method": "DELETE",
+        "url": {
+          "raw": "https://localhost/products/ec0c615d-0571-4e4b-9582-59a7edaf8117",
+          "protocol": "https",
+          "host": ["localhost"],
+          "path": ["products", "ec0c615d-0571-4e4b-9582-59a7edaf8117"]
+        }
+      }
+    },
+    {
+      "name": "List products",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "https://localhost/products",
+          "protocol": "https",
+          "host": ["localhost"],
+          "path": ["products"]
+        }
+      }
+    },
+    {
+      "name": "Create cart",
+      "request": {
+        "method": "POST",
+        "url": {
+          "raw": "https://localhost/cart",
+          "protocol": "https",
+          "host": ["localhost"],
+          "path": ["cart"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const json = pm.response.json();",
+              "pm.collectionVariables.set(\"cart_id\", json.cart_id);"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Add product to cart",
+      "request": {
+        "method": "PUT",
+        "url": {
+          "raw": "https://localhost/cart/{{cart_id}}/c9c74236-7545-4c4c-a877-0561b67d0618",
+          "protocol": "https",
+          "host": ["localhost"],
+          "path": ["cart", "{{cart_id}}", "c9c74236-7545-4c4c-a877-0561b67d0618"]
+        }
+      }
+    },
+    {
+      "name": "Remove product from cart",
+      "request": {
+        "method": "DELETE",
+        "url": {
+          "raw": "https://localhost/cart/{{cart_id}}/00c5560b-efb9-4277-beb8-5b4feb594779",
+          "protocol": "https",
+          "host": ["localhost"],
+          "path": ["cart", "{{cart_id}}", "00c5560b-efb9-4277-beb8-5b4feb594779"]
+        }
+      }
+    },
+    {
+      "name": "Show cart",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "https://localhost/cart/{{cart_id}}",
+          "protocol": "https",
+          "host": ["localhost"],
+          "path": ["cart", "{{cart_id}}"]
+        }
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "cart_id",
+      "value": ""
+    }
+  ]
+}
