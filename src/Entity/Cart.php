@@ -60,7 +60,7 @@ class Cart implements CartInterface
     }
 
 
-    public function addProduct(ProductInterface $product): void
+    public function addProduct(ProductInterface $product, int $quantity = 1): void
     {
         foreach ($this->products as $cartProduct) {
             if ($cartProduct->getProduct() === $product) {
@@ -68,7 +68,7 @@ class Cart implements CartInterface
             }
         }
 
-        $cartProduct = new CartProducts($this, $product, 1);
+        $cartProduct = new CartProducts($this, $product, $quantity);
         $this->products->add($cartProduct);
     }
 
