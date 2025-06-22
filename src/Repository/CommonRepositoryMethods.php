@@ -2,28 +2,22 @@
 
 namespace App\Repository;
 
-use Doctrine\ORM\EntityManagerInterface;
-
 trait CommonRepositoryMethods
 {
-    public function __construct(
-        protected EntityManagerInterface $entityManager
-    ) {}
-
     public function save(object $entity): void
     {
-        $this->entityManager->persist($entity);
-        $this->entityManager->flush();
+        $this->_em->persist($entity);
+        $this->_em->flush();
     }
 
     public function remove(object $entity): void
     {
-        $this->entityManager->remove($entity);
-        $this->entityManager->flush();
+        $this->_em->remove($entity);
+        $this->_em->flush();
     }
 
     public function flush(): void
     {
-        $this->entityManager->flush();
+        $this->_em->flush();
     }
 }

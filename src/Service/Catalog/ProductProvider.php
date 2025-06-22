@@ -5,7 +5,7 @@ namespace App\Service\Catalog;
 interface ProductProvider
 {
     /**
-     * @return Product[]
+     * @return ProductInterface[]
      */
     public function getProducts(int $page = 0, int $count = 3): iterable;
 

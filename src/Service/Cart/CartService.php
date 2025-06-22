@@ -38,8 +38,8 @@ class CartService implements CartServiceInterface
 
     public function removeProduct(string $cartId, string $productId): void
     {
-        $cart = $this->cartRepository->find($cartId);
-        $product = $this->productRepository->find($productId);
+        $cart = $this->cartRepository->findOneBy(['id' => $cartId]);
+        $product = $this->productRepository->findOneBy(['id' => $productId]);
 
         if (!$cart || !$product) {
             throw new \InvalidArgumentException('Cart or product not found.');
@@ -48,5 +48,23 @@ class CartService implements CartServiceInterface
         $cart->removeProduct($product);
 
         $this->cartRepository->save($cart);
+    }
+
+    public function updateProductQuantity(string $cartId, string $productId, int $quantity = 1): void
+    {
+        $cart = $this->cartRepository->findOneBy(['id' => $cartId]);
+        $product = $this->productRepository->findOneBy(['id' => $productId]);
+
+        if (!$cart || !$product) {
+            throw new \InvalidArgumentException('Cart or product not found.');
+        }
+
+        $cart->updateProductQuantity($product, $quantity);
+        $this->cartRepository->save($cart);
+    }
+
+    public function getCart(string $cartId): ?Cart
+    {
+        return $this->cartRepository->find($cartId);
     }
 }
