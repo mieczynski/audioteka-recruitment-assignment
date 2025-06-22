@@ -1,0 +1,16 @@
+fos_rest:
+    allowed_methods_listener:  true
+    body_listener:
+        decoders:
+            json: fos_rest.decoder.json
+    body_converter:
+        enabled: true
+    view:
+        view_response_listener:  'force'
+        formats:
+            json: true
+    format_listener:
+        rules:
+            - { path: ^/, prefer_extension: true, fallback_format: json, priorities: [ json ] }
+    serializer:
+        serialize_null: true

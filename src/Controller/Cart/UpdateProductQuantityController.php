@@ -7,13 +7,13 @@ use App\Entity\Cart;
 use App\Entity\Product;
 use App\Messenger\UpdateProductQuantity;
 use App\ResponseBuilder\ErrorBuilderInterface;
+use FOS\RestBundle\Controller\Annotations as Rest;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Messenger\HandleTrait;
 use Symfony\Component\Messenger\MessageBusInterface;
-use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Exception\ValidationFailedException;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -23,30 +23,32 @@ class UpdateProductQuantityController extends AbstractController
 {
     use HandleTrait;
 
-//    use MessageBusTrait;
-
     public function __construct(
         private readonly ErrorBuilderInterface $errorBuilder,
-        private readonly SerializerInterface $serializer,
         private readonly ValidatorInterface $validator,
-        MessageBusInterface $messageBus) {
+        MessageBusInterface $messageBus
+    ) {
         $this->messageBus = $messageBus;
     }
 
-
-    public function __invoke(Cart $cart, Product $product, Request $request): Response
+    /**
+     * @ParamConverter("updateProductQuantityDTO", class="App\DTO\Cart\UpdateProductQuantityDTO", converter="fos_rest.request_body")
+     */
+    public function __invoke(UpdateProductQuantityDTO $updateProductQuantityDTO, Cart $cart, Product $product): Response
     {
-        /** @var UpdateProductQuantityDTO $dto */
-        $dto = $this->serializer->deserialize($request->getContent(), UpdateProductQuantityDTO::class, 'json');
-        $violations = $this->validator->validate($dto);
+        $violations = $this->validator->validate($updateProductQuantityDTO);
 
         if (count($violations) > 0) {
-            throw new ValidationFailedException($dto, $violations);
+            throw new ValidationFailedException($updateProductQuantityDTO, $violations);
         }
 
         try {
-            $this->handle(new UpdateProductQuantity($cart->getId(), $product->getId(), $dto->quantity));
-        } catch (\InvalidArgumentException $e) {
+            $this->handle(new UpdateProductQuantity(
+                $cart->getId(),
+                $product->getId(),
+                $updateProductQuantityDTO->getQuantity()
+            ));
+        } catch (\InvalidArgumentException|\DomainException $e) {
             return new JsonResponse(
                 ($this->errorBuilder)($e->getMessage()),
                 Response::HTTP_UNPROCESSABLE_ENTITY
@@ -55,5 +57,4 @@ class UpdateProductQuantityController extends AbstractController
 
         return new Response('', Response::HTTP_NO_CONTENT);
     }
-
 }
