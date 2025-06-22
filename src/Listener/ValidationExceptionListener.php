@@ -6,6 +6,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use Symfony\Component\Messenger\Exception\HandlerFailedException;
+use Symfony\Component\Serializer\Exception\NotNormalizableValueException;
 use Symfony\Component\Validator\Exception\ValidationFailedException;
 
 class ValidationExceptionListener
@@ -49,6 +50,14 @@ class ValidationExceptionListener
             $event->setResponse(new JsonResponse([
                 'error' => $exception->getMessage(),
             ], $exception->getStatusCode()));
+        }
+
+        if ($exception instanceof NotNormalizableValueException) {
+            $event->setResponse(new JsonResponse([
+                'error' => 'Invalid input type',
+                'details' => $exception->getMessage(),
+            ], JsonResponse::HTTP_BAD_REQUEST));
+            return;
         }
     }
 }
