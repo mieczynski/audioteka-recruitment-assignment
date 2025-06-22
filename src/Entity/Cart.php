@@ -84,24 +84,52 @@ class Cart implements CartInterface
         }
     }
 
-
     public function updateProductQuantity(ProductInterface $product, int $quantity): void
     {
-        if ($quantity < 1 || $quantity > self::MAX_QUANTITY_PER_PRODUCT) {
-            throw new \InvalidArgumentException(sprintf(
-                'Quantity must be between 1 and %d.',
-                self::MAX_QUANTITY_PER_PRODUCT
-            ));
+        $cartProduct = $this->findCartProduct($product);
+        $newQuantity = ($cartProduct?->getQuantity() ?? 0) + $quantity;
+
+        if ($newQuantity <= 0) {
+            if ($cartProduct) {
+                $this->removeCartProduct($cartProduct);
+            }
+            return;
         }
 
+        if ($newQuantity > self::MAX_QUANTITY_PER_PRODUCT) {
+            throw new \InvalidArgumentException(sprintf('Quantity cannot exceed %d.', self::MAX_QUANTITY_PER_PRODUCT));
+        }
+
+        if ($cartProduct) {
+            $cartProduct->setQuantity($newQuantity);
+        } else {
+            $this->addCartProduct($product, $newQuantity);
+        }
+    }
+
+    private function findCartProduct(ProductInterface $product): ?CartProducts
+    {
         foreach ($this->products as $cartProduct) {
             if ($cartProduct->getProduct() === $product) {
-                $cartProduct->setQuantity($quantity);
-                return;
+                return $cartProduct;
             }
         }
 
-        $cartProduct = new CartProducts($this, $product, $quantity);
-        $this->products->add($cartProduct);
+        return null;
     }
+
+    private function removeCartProduct(CartProducts $cartProduct): void
+    {
+        $this->products->removeElement($cartProduct);
+    }
+
+    private function addCartProduct(ProductInterface $product, int $quantity): void
+    {
+        if ($this->isFull()) {
+            throw new \DomainException('Cart is full. Cannot add more products.');
+        }
+
+        $this->products->add(new CartProducts($this, $product, $quantity));
+    }
+
 }
