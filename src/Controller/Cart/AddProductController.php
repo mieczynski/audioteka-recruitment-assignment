@@ -7,7 +7,7 @@ use App\Entity\Product;
 use App\Messenger\AddProductToCart;
 use App\Messenger\MessageBusAwareInterface;
 use App\Messenger\MessageBusTrait;
-use App\ResponseBuilder\ErrorBuilder;
+use App\ResponseBuilder\ErrorBuilderInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -24,7 +24,7 @@ class AddProductController extends AbstractController
 
 //    use MessageBusTrait;
 
-    public function __construct(private ErrorBuilder $errorBuilder, MessageBusInterface $messageBus) {
+    public function __construct(private ErrorBuilderInterface $errorBuilder, MessageBusInterface $messageBus) {
         $this->messageBus = $messageBus;
     }
 
@@ -32,7 +32,7 @@ class AddProductController extends AbstractController
     {
         if ($cart->isFull()) {
             return new JsonResponse(
-                $this->errorBuilder->__invoke('Cart is full.'),
+                $this->errorBuilder->build('Cart is full.'),
                 Response::HTTP_UNPROCESSABLE_ENTITY
             );
         }

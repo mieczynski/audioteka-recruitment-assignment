@@ -3,6 +3,7 @@
 namespace App\Tests\Unit\ResponseBuilder;
 
 use App\ResponseBuilder\ErrorBuilder;
+use App\ResponseBuilder\ErrorBuilderInterface;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -10,7 +11,7 @@ use PHPUnit\Framework\TestCase;
  */
 class ErrorBuilderTest extends TestCase
 {
-    private ErrorBuilder $builder;
+    private readonly ErrorBuilderInterface $builder;
 
     public function setUp(): void
     {
@@ -21,6 +22,6 @@ class ErrorBuilderTest extends TestCase
 
     public function test_builds_error(): void
     {
-        $this->assertEquals(['error_message' => 'Error message.'], $this->builder->__invoke('Error message.'));
+        $this->assertEquals(['error_message' => 'Error message.'], $this->builder->build('Error message.'));
     }
 }

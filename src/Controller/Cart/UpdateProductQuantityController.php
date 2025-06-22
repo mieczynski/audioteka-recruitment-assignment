@@ -6,7 +6,7 @@ use App\DTO\Cart\UpdateProductQuantityDTO;
 use App\Entity\Cart;
 use App\Entity\Product;
 use App\Messenger\UpdateProductQuantity;
-use App\ResponseBuilder\ErrorBuilder;
+use App\ResponseBuilder\ErrorBuilderInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -25,7 +25,7 @@ class UpdateProductQuantityController extends AbstractController
 //    use MessageBusTrait;
 
     public function __construct(
-        private readonly ErrorBuilder $errorBuilder,
+        private readonly ErrorBuilderInterface $errorBuilder,
         private readonly SerializerInterface $serializer,
         private readonly ValidatorInterface $validator,
         MessageBusInterface $messageBus) {
@@ -47,7 +47,7 @@ class UpdateProductQuantityController extends AbstractController
             }
 
             return new JsonResponse(
-                $this->errorBuilder->__invoke($errors),
+                $this->errorBuilder->build(implode($errors)),
                 Response::HTTP_BAD_REQUEST
             );
         }

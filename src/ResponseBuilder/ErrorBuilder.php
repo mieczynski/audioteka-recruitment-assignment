@@ -2,9 +2,9 @@
 
 namespace App\ResponseBuilder;
 
-class ErrorBuilder
+class ErrorBuilder implements ErrorBuilderInterface
 {
-    public function __invoke(string $message): array
+    public function build(string $message): array
     {
         return [
             'error_message' => $message,
