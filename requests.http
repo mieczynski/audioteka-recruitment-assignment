@@ -27,6 +27,15 @@ PUT https://localhost/cart/{{cart_id}}/c9c74236-7545-4c4c-a877-0561b67d0618
 
 DELETE https://localhost/cart/{{cart_id}}/00c5560b-efb9-4277-beb8-5b4feb594779
 
+### Update product quantity in cart
+
+PATCH https://localhost/cart/{{cart_id}}/c9c74236-7545-4c4c-a877-0561b67d0618
+Content-Type: application/json
+
+{
+  "quantity": 3
+}
+
 ### Show cart
 
 GET https://localhost/cart/{{cart_id}}

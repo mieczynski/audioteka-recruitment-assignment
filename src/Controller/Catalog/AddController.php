@@ -5,7 +5,7 @@ namespace App\Controller\Catalog;
 use App\Messenger\AddProductToCatalog;
 use App\Messenger\MessageBusAwareInterface;
 use App\Messenger\MessageBusTrait;
-use App\ResponseBuilder\ErrorBuilder;
+use App\ResponseBuilder\ErrorBuilderInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,7 +19,7 @@ class AddController extends AbstractController implements MessageBusAwareInterfa
 {
     use MessageBusTrait;
 
-    public function __construct(private ErrorBuilder $errorBuilder) { }
+    public function __construct(private readonly ErrorBuilderInterface $errorBuilder) { }
 
     public function __invoke(Request $request): Response
     {
@@ -28,7 +28,7 @@ class AddController extends AbstractController implements MessageBusAwareInterfa
 
         if ($name === '' || $price < 1) {
             return new JsonResponse(
-                $this->errorBuilder->__invoke('Invalid name or price.'),
+                $this->errorBuilder->build('Invalid name or price.'),
                 Response::HTTP_UNPROCESSABLE_ENTITY
             );
         }

@@ -2,7 +2,7 @@
 
 namespace App\Service\Catalog;
 
-interface Product
+interface ProductInterface
 {
     public function getId(): string;
     public function getName(): string;
