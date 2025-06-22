@@ -5,14 +5,12 @@ namespace App\Controller\Cart;
 use App\DTO\Cart\UpdateProductQuantityDTO;
 use App\Entity\Cart;
 use App\Entity\Product;
+use App\Messenger\MessageBusTrait;
 use App\Messenger\UpdateProductQuantity;
 use App\ResponseBuilder\ErrorBuilderInterface;
-use FOS\RestBundle\Controller\Annotations as Rest;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Messenger\HandleTrait;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Exception\ValidationFailedException;
@@ -21,7 +19,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 #[Route('/cart/{cart}/{product}', name: 'cart-update-product-quantity', methods: ['PATCH'])]
 class UpdateProductQuantityController extends AbstractController
 {
-    use HandleTrait;
+    use MessageBusTrait;
 
     public function __construct(
         private readonly ErrorBuilderInterface $errorBuilder,
@@ -42,19 +40,7 @@ class UpdateProductQuantityController extends AbstractController
             throw new ValidationFailedException($updateProductQuantityDTO, $violations);
         }
 
-        try {
-            $this->handle(new UpdateProductQuantity(
-                $cart->getId(),
-                $product->getId(),
-                $updateProductQuantityDTO->getQuantity()
-            ));
-        } catch (\InvalidArgumentException|\DomainException $e) {
-            return new JsonResponse(
-                ($this->errorBuilder)($e->getMessage()),
-                Response::HTTP_UNPROCESSABLE_ENTITY
-            );
-        }
-
+        $this->dispatch(new UpdateProductQuantity($cart->getId(), $product->getId(), $updateProductQuantityDTO->getQuantity()));
         return new Response('', Response::HTTP_NO_CONTENT);
     }
 }
