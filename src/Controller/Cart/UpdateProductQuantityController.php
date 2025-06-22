@@ -15,6 +15,7 @@ use Symfony\Component\Messenger\HandleTrait;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Validator\Exception\ValidationFailedException;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 #[Route('/cart/{cart}/{product}', name: 'cart-update-product-quantity', methods: ['PATCH'])]
@@ -40,16 +41,7 @@ class UpdateProductQuantityController extends AbstractController
         $violations = $this->validator->validate($dto);
 
         if (count($violations) > 0) {
-            $errors = [];
-
-            foreach ($violations as $violation) {
-                $errors[] = $violation->getMessage();
-            }
-
-            return new JsonResponse(
-                $this->errorBuilder->build(implode($errors)),
-                Response::HTTP_BAD_REQUEST
-            );
+            throw new ValidationFailedException($dto, $violations);
         }
 
         try {
