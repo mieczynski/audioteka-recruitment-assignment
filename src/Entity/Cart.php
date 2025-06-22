@@ -42,7 +42,8 @@ class Cart implements CartInterface
     {
         return array_reduce(
             $this->products->toArray(),
-            static fn(int $total, ProductInterface $product): int => $total + $product->getPrice(),
+            static fn(int $total, CartProducts $cartProduct): int =>
+                $total + ($cartProduct->getProduct()->getPrice() * $cartProduct->getQuantity()),
             0
         );
     }
