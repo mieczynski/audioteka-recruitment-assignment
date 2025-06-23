@@ -129,6 +129,6 @@ class UpdateProductQuantityControllerTest extends WebTestCase
         self::assertResponseStatusCodeSame(400);
         $response = $this->getJsonResponse();
 
-        self::assertArrayHasKey('error', $response);
+        self::assertArrayHasKey('error_message', $response);
     }
 }
