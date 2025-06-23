@@ -2,8 +2,10 @@
 
 namespace App\Listener;
 
+use App\ResponseBuilder\ErrorBuilderInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use Symfony\Component\Messenger\Exception\HandlerFailedException;
 use Symfony\Component\Serializer\Exception\NotNormalizableValueException;
@@ -11,6 +13,13 @@ use Symfony\Component\Validator\Exception\ValidationFailedException;
 
 class ValidationExceptionListener
 {
+
+    public function __construct(
+        private readonly ErrorBuilderInterface $errorBuilder
+    )
+    {
+    }
+
     public function onKernelException(ExceptionEvent $event): void
     {
         $exception = $event->getThrowable();
@@ -59,5 +68,13 @@ class ValidationExceptionListener
             ], JsonResponse::HTTP_BAD_REQUEST));
             return;
         }
+
+        if ($exception instanceof HttpException) {
+            $event->setResponse(new JsonResponse(
+                $this->errorBuilder->build($exception->getMessage()),
+                $exception->getStatusCode()
+            ));
+        }
+
     }
 }

@@ -68,8 +68,7 @@ class Cart implements CartInterface
             }
         }
 
-        $cartProduct = new CartProducts($this, $product, $quantity);
-        $this->products->add($cartProduct);
+        $this->addCartProduct($product, $quantity);
     }
 
 
@@ -78,7 +77,7 @@ class Cart implements CartInterface
     {
         foreach ($this->products as $cartProduct) {
             if ($cartProduct->getProduct() === $product) {
-                $this->products->removeElement($cartProduct);
+                $this->removeCartProduct($cartProduct);
                 return;
             }
         }
@@ -107,7 +106,7 @@ class Cart implements CartInterface
         }
     }
 
-    private function findCartProduct(ProductInterface $product): ?CartProducts
+    public function findCartProduct(ProductInterface $product): ?CartProducts
     {
         foreach ($this->products as $cartProduct) {
             if ($cartProduct->getProduct() === $product) {
