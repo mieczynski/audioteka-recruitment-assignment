@@ -16,7 +16,9 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Exception\ValidationFailedException;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-#[Route('/cart/{cart}/{product}', name: 'cart-update-product-quantity', methods: ['PATCH'])]
+/**
+ * @Route("/cart/{cart}/{product}", methods={"PATCH"}, cart-update-product-quantity")
+ */
 class UpdateProductQuantityController extends AbstractController
 {
     use MessageBusTrait;
