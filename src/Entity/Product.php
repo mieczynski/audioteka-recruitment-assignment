@@ -46,6 +46,18 @@ class Product implements ProductInterface
         return $this->priceAmount;
     }
 
+    public function setPrice(string $price): self
+    {
+        $this->priceAmount = $price;
+        return $this;
+    }
+
+    public function setName(string $name): self
+    {
+        $this->name = $name;
+        return $this;
+    }
+
     public function getCreatedAt(): \DateTimeImmutable
     {
         return $this->createdAt;

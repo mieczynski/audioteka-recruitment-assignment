@@ -3,12 +3,16 @@
 namespace App\Service\Catalog;
 
 use App\Entity\Product;
+use App\Factory\Product\ProductFactoryInterface;
 use App\Repository\ProductRepository;
 use Ramsey\Uuid\Uuid;
 
 class ProductService implements ProductServiceInterface, ProductProvider
 {
-    public function __construct(private readonly ProductRepository $productRepository){}
+    public function __construct(
+        private readonly ProductRepository $productRepository,
+        private readonly ProductFactoryInterface $productFactory,
+    ){}
 
     public function add(string $name, int $price): Product
     {
@@ -16,6 +20,16 @@ class ProductService implements ProductServiceInterface, ProductProvider
         $this->productRepository->save($product);
         return $product;
     }
+
+    public function update(string $id, string $name, int $price): Product
+    {
+        $product = $this->productRepository->find($id);
+        $this->productFactory->update($product, $name, $price);
+        $this->productRepository->save($product);
+
+        return $product;
+    }
+
 
     public function remove(string $id): void
     {
