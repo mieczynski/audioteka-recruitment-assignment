@@ -2,11 +2,11 @@
 
 namespace App\Controller\Cart;
 
+use App\Action\Command\RemoveProductFromCart\RemoveProductFromCart;
 use App\Entity\Cart;
 use App\Entity\Product;
 use App\Messenger\MessageBusAwareInterface;
 use App\Messenger\MessageBusTrait;
-use App\Messenger\RemoveProductFromCart;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;

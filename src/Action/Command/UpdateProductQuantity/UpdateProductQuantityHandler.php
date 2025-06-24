@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Messenger;
+namespace App\Action\Command\UpdateProductQuantity;
 
 use App\Service\Cart\CartServiceInterface;
 use Doctrine\ORM\EntityManagerInterface;

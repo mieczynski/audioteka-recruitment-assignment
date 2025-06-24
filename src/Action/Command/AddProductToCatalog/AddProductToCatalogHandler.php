@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Messenger;
+namespace App\Action\Command\AddProductToCatalog;
 
 use App\Service\Catalog\ProductServiceInterface;
 use Symfony\Component\Messenger\Handler\MessageHandlerInterface;

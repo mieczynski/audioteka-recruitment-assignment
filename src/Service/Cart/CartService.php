@@ -9,7 +9,7 @@ use App\Repository\ProductRepository;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class CartService implements CartServiceInterface
 {
@@ -69,7 +69,7 @@ class CartService implements CartServiceInterface
         $product = $this->productRepository->findOneBy(['id' => $productId]);
 
         if (!$cart || !$product) {
-            throw new BadRequestHttpException('Cart or product not found.');
+            throw new NotFoundHttpException('Cart or product not found.');
         }
 
         return [$cart, $product];
