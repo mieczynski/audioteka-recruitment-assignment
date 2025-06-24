@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Messenger;
+namespace App\Action\Command\CreateCart;
 
 use App\Service\Cart\CartInterface;
 use App\Service\Cart\CartServiceInterface;

@@ -2,14 +2,13 @@
 
 namespace App\Controller\Catalog;
 
+use App\Action\Command\UpdateProductFromCatalog\UpdateProductFromCatalog;
 use App\DTO\Catalog\Product\ProductDTO;
 use App\Entity\Product;
 use App\Messenger\MessageBusAwareInterface;
 use App\Messenger\MessageBusTrait;
-use App\Messenger\UpdateProductFromCatalog;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Validator\Exception\ValidationFailedException;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
@@ -29,13 +28,10 @@ class UpdateController extends AbstractController implements MessageBusAwareInte
     /**
      * @ParamConverter("productDTO", class="App\DTO\Catalog\Product\ProductDTO", converter="fos_rest.request_body")
      */
-    public function __invoke(?Product $product, ProductDTO $productDTO): Response
+    public function __invoke(Product $product, ProductDTO $productDTO): Response
     {
-        if (!$product) {
-            throw new NotFoundHttpException('Product not found.');
-        }
-
         $violations = $this->validator->validate($productDTO);
+
         if (count($violations) > 0) {
             throw new ValidationFailedException($productDTO, $violations);
         }

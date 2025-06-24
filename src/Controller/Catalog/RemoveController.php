@@ -2,10 +2,10 @@
 
 namespace App\Controller\Catalog;
 
+use App\Action\Command\RemoveProductFromCatalog\RemoveProductFromCatalog;
 use App\Entity\Product;
 use App\Messenger\MessageBusAwareInterface;
 use App\Messenger\MessageBusTrait;
-use App\Messenger\RemoveProductFromCatalog;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;

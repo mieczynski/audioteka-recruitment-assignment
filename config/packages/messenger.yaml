@@ -10,7 +10,7 @@ framework:
             sync: 'sync://'
 
         routing:
-#            'App\Messenger\AddProductToCart': async
-            'App\Messenger\RemoveProductFromCart': async
-            'App\Messenger\AddProductToCatalog': async
-            'App\Messenger\RemoveProductFromCatalog': async
+            'App\Action\Command\AddProductToCart\AddProductToCart': async
+            'App\Action\Command\RemoveProductFromCart\RemoveProductFromCart': async
+            'App\Action\Command\AddProductToCatalog\AddProductToCatalog': async
+            'App\Action\Command\RemoveProductFromCatalog\RemoveProductFromCatalog': async

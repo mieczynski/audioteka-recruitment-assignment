@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Messenger;
+namespace App\Action\Command\AddProductToCart;
 
-class RemoveProductFromCart
+class AddProductToCart
 {
     public function __construct(public readonly string $cartId, public readonly string $productId) {}
 }
