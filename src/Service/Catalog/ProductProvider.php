@@ -7,7 +7,7 @@ interface ProductProvider
     /**
      * @return ProductInterface[]
      */
-    public function getProducts(int $page = 0, int $count = 3): iterable;
+    public function getProducts(): iterable;
 
     public function exists(string $productId): bool;
 
