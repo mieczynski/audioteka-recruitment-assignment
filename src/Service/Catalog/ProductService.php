@@ -30,9 +30,9 @@ class ProductService implements ProductServiceInterface, ProductProvider
         return $this->productRepository->find($productId) !== null;
     }
 
-    public function getProducts(int $page = 0, int $count = 3): iterable
+    public function getProducts(): iterable
     {
-        return $this->productRepository->findPaginated($page, $count);
+        return $this->productRepository->findPaginated();
     }
 
     public function getTotalCount(): int

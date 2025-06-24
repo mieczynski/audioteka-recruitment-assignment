@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Product;
+use App\Service\FilterService\FilterServiceInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -18,16 +19,21 @@ class ProductRepository extends ServiceEntityRepository
 {
     use CommonRepositoryMethods;
 
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(
+        ManagerRegistry $registry,
+        private readonly FilterServiceInterface $filterService
+    )
     {
         parent::__construct($registry, Product::class);
     }
 
-    public function findPaginated(int $page = 0, int $count = 3): array
+    public function findPaginated(): array
     {
-        return $this->createQueryBuilder('p')
-            ->setFirstResult($page * $count)
-            ->setMaxResults($count)
+        $qb = $this->createQueryBuilder('p');
+
+        $this->filterService->apply($qb);
+
+        return $qb
             ->getQuery()
             ->getResult();
     }
