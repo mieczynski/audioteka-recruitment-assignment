@@ -1,0 +1,5 @@
+1. Przenieść logię pobierania danych do katalogu Acion/Query
+2. Zmienić format zapytań na json
+3. Wprowadzić DTOs
+4. Wprowadzić serializer np jms
+5. Dodać autoryzacje np JWT
